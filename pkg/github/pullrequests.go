@@ -1152,6 +1152,10 @@ func SearchPullRequests(getClient GetClientFn, t translations.TranslationHelperF
 				Type:        "string",
 				Description: "Optional repository name. If provided with owner, only pull requests for this repository are listed.",
 			},
+			"author": {
+				Type:        "string",
+				Description: "Optional username to filter pull requests by author.",
+			},
 			"sort": {
 				Type:        "string",
 				Description: "Sort field by number of matches of categories, defaults to best match",

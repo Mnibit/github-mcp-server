@@ -10,6 +10,10 @@
       "query"
     ],
     "properties": {
+      "author": {
+        "type": "string",
+        "description": "Optional username to filter issues by author."
+      },
       "order": {
         "type": "string",
         "description": "Sort order",
