@@ -66,6 +66,15 @@ func searchHandler(
 		query = fmt.Sprintf("repo:%s/%s %s", owner, repo, query)
 	}
 
+	author, err := OptionalParam[string](args, "author")
+	if err != nil {
+		return utils.NewToolResultError(err.Error()), nil
+	}
+
+	if author != "" && !hasFilter(query, "author") {
+		query = fmt.Sprintf("author:%s %s", author, query)
+	}
+
 	sort, err := OptionalParam[string](args, "sort")
 	if err != nil {
 		return utils.NewToolResultError(err.Error()), nil

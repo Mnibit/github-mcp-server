@@ -915,6 +915,10 @@ func SearchIssues(getClient GetClientFn, t translations.TranslationHelperFunc) (
 				Type:        "string",
 				Description: "Optional repository name. If provided with owner, only issues for this repository are listed.",
 			},
+			"author": {
+				Type:        "string",
+				Description: "Optional username to filter issues by author.",
+			},
 			"sort": {
 				Type:        "string",
 				Description: "Sort field by number of matches of categories, defaults to best match",

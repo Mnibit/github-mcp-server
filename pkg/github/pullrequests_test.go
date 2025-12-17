@@ -841,6 +841,7 @@ func Test_SearchPullRequests(t *testing.T) {
 	assert.Contains(t, schema.Properties, "query")
 	assert.Contains(t, schema.Properties, "owner")
 	assert.Contains(t, schema.Properties, "repo")
+	assert.Contains(t, schema.Properties, "author")
 	assert.Contains(t, schema.Properties, "sort")
 	assert.Contains(t, schema.Properties, "order")
 	assert.Contains(t, schema.Properties, "perPage")
@@ -1071,6 +1072,54 @@ func Test_SearchPullRequests(t *testing.T) {
 			),
 			requestArgs: map[string]interface{}{
 				"query": "is:pr repo:github/github-mcp-server (label:bug OR label:enhancement OR label:feature)",
+			},
+			expectError:    false,
+			expectedResult: mockSearchResult,
+		},
+		{
+			name: "pull request search with author parameter",
+			mockedClient: mock.NewMockedHTTPClient(
+				mock.WithRequestMatchHandler(
+					mock.GetSearchIssues,
+					expectQueryParams(
+						t,
+						map[string]string{
+							"q":        "author:testuser is:pr feature",
+							"page":     "1",
+							"per_page": "30",
+						},
+					).andThen(
+						mockResponse(t, http.StatusOK, mockSearchResult),
+					),
+				),
+			),
+			requestArgs: map[string]interface{}{
+				"query":  "feature",
+				"author": "testuser",
+			},
+			expectError:    false,
+			expectedResult: mockSearchResult,
+		},
+		{
+			name: "pull request search with author parameter and existing author filter - no duplication",
+			mockedClient: mock.NewMockedHTTPClient(
+				mock.WithRequestMatchHandler(
+					mock.GetSearchIssues,
+					expectQueryParams(
+						t,
+						map[string]string{
+							"q":        "is:pr author:existinguser feature",
+							"page":     "1",
+							"per_page": "30",
+						},
+					).andThen(
+						mockResponse(t, http.StatusOK, mockSearchResult),
+					),
+				),
+			),
+			requestArgs: map[string]interface{}{
+				"query":  "author:existinguser feature",
+				"author": "testuser",
 			},
 			expectError:    false,
 			expectedResult: mockSearchResult,

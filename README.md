@@ -771,6 +771,7 @@ The following sets of tools are available:
   - `state`: Filter by state, by default both open and closed issues are returned when not provided (string, optional)
 
 - **search_issues** - Search issues
+  - `author`: Optional username to filter issues by author. (string, optional)
   - `order`: Sort order (string, optional)
   - `owner`: Optional repository owner. If provided with repo, only issues for this repository are listed. (string, optional)
   - `page`: Page number for pagination (min 1) (number, optional)
@@ -1016,6 +1017,7 @@ The following sets of tools are available:
   - `repo`: Repository name (string, required)
 
 - **search_pull_requests** - Search pull requests
+  - `author`: Optional username to filter pull requests by author. (string, optional)
   - `order`: Sort order (string, optional)
   - `owner`: Optional repository owner. If provided with repo, only pull requests for this repository are listed. (string, optional)
   - `page`: Page number for pagination (min 1) (number, optional)

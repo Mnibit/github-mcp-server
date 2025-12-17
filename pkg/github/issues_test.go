@@ -492,6 +492,7 @@ func Test_SearchIssues(t *testing.T) {
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "query")
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "owner")
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "repo")
+	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "author")
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "sort")
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "order")
 	assert.Contains(t, tool.InputSchema.(*jsonschema.Schema).Properties, "perPage")
@@ -746,6 +747,54 @@ func Test_SearchIssues(t *testing.T) {
 			),
 			requestArgs: map[string]interface{}{
 				"query": "repo:github/github-mcp-server is:issue (label:critical OR label:urgent OR label:high-priority OR label:blocker)",
+			},
+			expectError:    false,
+			expectedResult: mockSearchResult,
+		},
+		{
+			name: "issues search with author parameter",
+			mockedClient: mock.NewMockedHTTPClient(
+				mock.WithRequestMatchHandler(
+					mock.GetSearchIssues,
+					expectQueryParams(
+						t,
+						map[string]string{
+							"q":        "author:testuser is:issue bug",
+							"page":     "1",
+							"per_page": "30",
+						},
+					).andThen(
+						mockResponse(t, http.StatusOK, mockSearchResult),
+					),
+				),
+			),
+			requestArgs: map[string]interface{}{
+				"query":  "bug",
+				"author": "testuser",
+			},
+			expectError:    false,
+			expectedResult: mockSearchResult,
+		},
+		{
+			name: "issues search with author parameter and existing author filter - no duplication",
+			mockedClient: mock.NewMockedHTTPClient(
+				mock.WithRequestMatchHandler(
+					mock.GetSearchIssues,
+					expectQueryParams(
+						t,
+						map[string]string{
+							"q":        "is:issue author:existinguser bug",
+							"page":     "1",
+							"per_page": "30",
+						},
+					).andThen(
+						mockResponse(t, http.StatusOK, mockSearchResult),
+					),
+				),
+			),
+			requestArgs: map[string]interface{}{
+				"query":  "author:existinguser bug",
+				"author": "testuser",
 			},
 			expectError:    false,
 			expectedResult: mockSearchResult,
